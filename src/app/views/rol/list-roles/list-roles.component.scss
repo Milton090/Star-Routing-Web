@@ -1,0 +1,106 @@
+.container {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.table-container {
+  overflow-x: auto;
+  max-width: 100%;
+  overflow-y: auto;
+}
+
+
+.mat-row {
+  display: flex;
+  align-items: center;
+}
+
+.mat-cell {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.max-width-cell {
+  max-width: 116px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.create-button-container {
+  position: relative;
+  z-index: 0;
+}
+
+app-navigation {
+  position: relative;
+  z-index: 0;
+}
+
+.dialogData {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dialogData h2 {
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.dialogData p {
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.dialogData strong {
+  font-weight: bold;
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-container button {
+  flex: 1;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
+}
+
+.icon-text {
+  margin-left: 5px;
+}
+
+.pdf-button, .excel-button {
+  white-space: nowrap;
+  font-size: 14px;
+  min-width: 120px;
+}

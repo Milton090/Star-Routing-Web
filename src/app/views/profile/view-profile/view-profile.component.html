@@ -1,0 +1,28 @@
+<div class="spinner-overlay" *ngIf="loading">
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+
+<app-navigation>
+  <div class="container">
+    <mat-card class="card">
+      <mat-card-header>
+        <div mat-card-avatar class="user-avatar">
+          <mat-icon>account_box</mat-icon>
+        </div>
+        <mat-card-title>Datos del usuario</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>N° Documento:</strong> {{ userData?.documentoUsuario }}</p>
+        <p><strong>Tipo documento:</strong> {{ getTipoDocumento(userData?.idTipoDocumento) }}</p>
+        <p><strong>Nombre:</strong> {{ userData?.nombreUsuario }}</p>
+        <p><strong>Apellido:</strong> {{ userData?.apellidoUsuario }}</p>
+        <p><strong>Teléfono:</strong> {{ userData?.telefonoUsuario }}</p>
+        <p><strong>Email:</strong> {{ userData?.correoUsuario }}</p>
+        <p><strong>Rol:</strong> {{ getRol(userData?.idRol) }}</p>
+      </mat-card-content><br>
+      <button mat-raised-button color="primary" (click)="openEditProfileDialog()">Editar</button>
+    </mat-card>
+  </div>
+</app-navigation>

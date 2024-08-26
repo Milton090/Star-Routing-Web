@@ -1,0 +1,56 @@
+<div class="spinner-overlay" *ngIf="loading">
+    <div class="spinner">
+        <mat-spinner></mat-spinner>
+    </div>
+</div>
+
+<app-navigation>
+    <div class="container">
+        <br>
+        <h2>Editar rol</h2>
+        <br>
+        <div class="container">
+            <form [formGroup]="editForm" (ngSubmit)="postForm(editForm.value)">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Nombre <b style="color: red;">*</b></label>
+                            <input type="text" class="form-control" formControlName="nombreRol" [ngClass]="{
+                            'is-invalid': editForm.get('nombreRol')?.invalid && editForm.get('nombreRol')?.dirty,
+                            'is-valid': editForm.get('nombreRol')?.valid
+                        }" />
+                            <div *ngIf="editForm.get('nombreRol')?.errors?.['required']" class="invalid-feedback">
+                                Este campo es obligatorio.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+
+                <div class="form-group">
+                    <label for="permisos">Permisos <b style="color: red;">*</b></label><br /><br />
+                    <div formArrayName="permisosSeleccionados">
+                        <div *ngFor="let permiso of permisos; let i = index">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" [formControlName]="i.toString()" />
+                                <label class="form-check-label">{{ permiso.nombrePermiso }}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br><br>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" (change)="updateAllCheckboxes($event)">
+                    <label class="form-check-label">Seleccionar todos</label>
+                </div>
+
+                <br>
+
+                <button type="button" mat-raised-button color='accent' (click)="goBack()">Atrás</button> |
+                <button type="submit" mat-raised-button color='primary' [disabled]="editForm.invalid">Guardar</button>
+                <br><br>
+            </form>
+        </div>
+    </div>
+</app-navigation>

@@ -1,0 +1,189 @@
+<div class="spinner-overlay" *ngIf="loading">
+    <div class="spinner">
+        <mat-spinner></mat-spinner>
+    </div>
+</div>
+
+<app-navigation>
+    <div class="container">
+        <br>
+        <h2>Crear usuario</h2>
+        <br>
+        <div class="container">
+            <form [formGroup]="newForm" (ngSubmit)="postForm(newForm.value)">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="idTipoDocumento">Tipo documento <b style="color: red;">*</b></label>
+                            <mat-select class="form-control" formControlName="idTipoDocumento"
+                                placeholder="---SELECCIONE---" [ngClass]="{
+                                'is-invalid': newForm.get('idTipoDocumento')?.invalid && newForm.get('idTipoDocumento')?.touched,
+                                'is-valid': newForm.get('idTipoDocumento')?.valid
+                            }">
+                                <mat-option *ngFor="let tipoDocumento of tiposDocumento"
+                                    [value]="tipoDocumento.idTipoDocumento">
+                                    {{ tipoDocumento.nombreTipo }}
+                                </mat-option>
+                            </mat-select>
+                            <div *ngIf="newForm.get('idTipoDocumento')?.errors?.['required']" class="invalid-feedback">
+                                Este campo es obligatorio.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">N° Documento <b style="color: red;">*</b></label>
+                            <input type="text" class="form-control" formControlName="documentoUsuario" [ngClass]="{
+                                'is-invalid': newForm.get('documentoUsuario')?.invalid && (newForm.get('documentoUsuario')?.touched || newForm.get('documentoUsuario')?.dirty),
+                                'is-valid': newForm.get('documentoUsuario')?.valid
+                            }" />
+
+                            <div *ngIf="newForm.get('documentoUsuario')?.errors?.['pattern']" class="invalid-feedback">
+                                Documento inválido, mínimo 7 y máximo 10 dígitos numéricos.
+                            </div>
+                            <div *ngIf="newForm.get('documentoUsuario')?.errors?.['required']" class="invalid-feedback">
+                                Este campo es obligatorio.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Nombre <b style="color: red;">*</b></label>
+                            <input type="text" class="form-control" formControlName="nombreUsuario" [ngClass]="{
+                            'is-invalid': newForm.get('nombreUsuario')?.invalid && (newForm.get('nombreUsuario')?.touched || newForm.get('nombreUsuario')?.dirty),
+                            'is-valid': newForm.get('nombreUsuario')?.valid
+                        }" />
+                            <div *ngIf="newForm.get('nombreUsuario')?.errors?.['required']" class="invalid-feedback">
+                                Este campo es obligatorio.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Apellido <b style="color: red;">*</b></label>
+                            <input type="text" class="form-control" formControlName="apellidoUsuario" [ngClass]="{
+                            'is-invalid': newForm.get('apellidoUsuario')?.invalid && (newForm.get('apellidoUsuario')?.touched || newForm.get('apellidoUsuario')?.dirty),
+                            'is-valid': newForm.get('apellidoUsuario')?.valid
+                        }" />
+                            <div *ngIf="newForm.get('apellidoUsuario')?.errors?.['required']" class="invalid-feedback">
+                                Este campo es obligatorio.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Teléfono <b style="color: red;">*</b></label>
+                            <input type="text" class="form-control" formControlName="telefonoUsuario" [ngClass]="{
+                            'is-invalid': newForm.get('telefonoUsuario')?.invalid && (newForm.get('telefonoUsuario')?.touched || newForm.get('telefonoUsuario')?.dirty),
+                            'is-valid': newForm.get('telefonoUsuario')?.valid
+                        }" />
+
+                            <div *ngIf="newForm.get('telefonoUsuario')?.errors?.['pattern']" class="invalid-feedback">
+                                Teléfono inválido, debe contener 10 dígitos numéricos.
+                            </div>
+                            <div *ngIf="newForm.get('telefonoUsuario')?.errors?.['required']" class="invalid-feedback">
+                                Este campo es obligatorio.
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Correo <b style="color: red;">*</b></label>
+                            <input type="email" class="form-control" formControlName="correoUsuario" [ngClass]="{
+                          'is-invalid': newForm.get('correoUsuario')?.invalid && (newForm.get('correoUsuario')?.touched || newForm.get('correoUsuario')?.dirty),
+                          'is-valid': newForm.get('correoUsuario')?.valid
+                        }" />
+
+                            <div *ngIf="newForm.get('correoUsuario')?.errors?.['pattern']" class="invalid-feedback">
+                                Correo inválido.
+                            </div>
+                            <div *ngIf="newForm.get('correoUsuario')?.errors?.['required']" class="invalid-feedback">
+                                Este campo es obligatorio.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Contraseña <b style="color: red;">*</b></label>
+                            <div class="input-group">
+                                <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control"
+                                    formControlName="contrasenaUsuario" [ngClass]="{
+                                    'is-invalid': newForm.get('contrasenaUsuario')?.invalid && (newForm.get('contrasenaUsuario')?.touched || newForm.get('contrasenaUsuario')?.dirty),
+                                    'is-valid': newForm.get('contrasenaUsuario')?.valid
+                                }" />
+
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" style="margin-left: 5px;"
+                                        (click)="toggleShowPassword()">
+                                        <mat-icon>
+                                            {{ showPassword ? 'visibility_off' : 'visibility' }}
+                                        </mat-icon>
+                                    </button>
+                                </div>
+
+                                <div *ngIf="newForm.get('contrasenaUsuario')?.errors?.['pattern']"
+                                    class="invalid-feedback">
+                                    La contraseña debe contener mínimo:
+                                    <ul>
+                                        <li>
+                                            8 caracteres.
+                                        </li>
+                                        <li>
+                                            Una minúscula.
+                                        </li>
+                                        <li>
+                                            Una mayúscula.
+                                        </li>
+                                        <li>
+                                            3 números.
+                                        </li>
+                                        <li>
+                                            1 caracter especial.
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div *ngIf="newForm.get('contrasenaUsuario')?.errors?.['required']"
+                                    class="invalid-feedback">
+                                    Este campo es obligatorio.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="idRol">Rol <b style="color: red;">*</b></label>
+                            <mat-select class="form-control" formControlName="idRol" placeholder="---SELECCIONE---"
+                                [ngClass]="{
+                                'is-invalid': newForm.get('idRol')?.invalid && newForm.get('idRol')?.touched,
+                                'is-valid': newForm.get('idRol')?.valid
+                            }">
+                                <mat-option *ngFor="let rol of rolUsuario" [value]="rol.idRol">{{
+                                    rol.nombreRol}}</mat-option>
+                            </mat-select>
+                            <div *ngIf="newForm.get('idRol')?.errors?.['required']" class="invalid-feedback">
+                                Este campo es obligatorio.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br><br />
+
+                <button type="button" mat-raised-button color="accent" (click)="goBack()">Atrás</button> |
+                <button type="submit" mat-raised-button color='primary' [disabled]="newForm.invalid">Guardar</button>
+                <br><br>
+            </form>
+        </div>
+    </div>
+</app-navigation>

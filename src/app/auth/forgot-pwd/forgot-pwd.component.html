@@ -1,0 +1,51 @@
+<div class="spinner-overlay" *ngIf="loading">
+    <div class="spinner">
+        <mat-spinner></mat-spinner>
+    </div>
+</div>
+<h1 mat-dialog-title>Recuperar contraseña</h1>
+<div mat-dialog-content>
+    <div class="content">
+        <form [formGroup]="forgotForm" (ngSubmit)="forgotPwd(forgotForm.value)">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Documento <b style="color: red;">*</b></label>
+                        <input type="text" class="form-control" formControlName="documentoUsuario" [ngClass]="{
+                    'is-invalid': forgotForm.get('documentoUsuario')?.invalid && (forgotForm.get('documentoUsuario')?.touched || forgotForm.get('documentoUsuario')?.dirty),
+                    'is-valid': forgotForm.get('documentoUsuario')?.valid
+                  }">
+                        <mat-error
+                            *ngIf="forgotForm.get('documentoUsuario')?.errors?.['required'] && (forgotForm.get('documentoUsuario')?.touched || forgotForm.get('documentoUsuario')?.dirty)"
+                            class="invalid-feedback">
+                            Este campo es obligatorio.
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Correo <b style="color: red;">*</b></label>
+                        <input type="email" class="form-control" formControlName="correoUsuario" [ngClass]="{
+                  'is-invalid': forgotForm.get('correoUsuario')?.invalid && (forgotForm.get('correoUsuario')?.touched || forgotForm.get('correoUsuario')?.dirty),
+                  'is-valid': forgotForm.get('correoUsuario')?.valid
+                }">
+                        <mat-error
+                            *ngIf="forgotForm.get('correoUsuario')?.errors?.['required'] && (forgotForm.get('correoUsuario')?.touched || forgotForm.get('correoUsuario')?.dirty)"
+                            class="invalid-feedback">
+                            Este campo es obligatorio.
+                        </mat-error>
+
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div mat-dialog-actions align="center">
+                <button type="submit" mat-raised-button color="primary"
+                    [disabled]="forgotForm.invalid">Recuperar</button>
+            </div>
+        </form>
+    </div>
+</div>

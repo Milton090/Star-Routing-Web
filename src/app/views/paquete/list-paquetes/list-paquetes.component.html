@@ -1,0 +1,240 @@
+<div class="spinner-overlay" *ngIf="loading">
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+<app-navigation>
+
+  <div class="container">
+    <br>
+    <h1>Paquetes</h1>
+    <div class="create-button-container">
+
+      <div class="row">
+        <div class="col-12 col-md-5">
+          <button mat-raised-button color="primary" (click)="newPaquete()" style="margin-top: 20px;">
+            <mat-icon>add</mat-icon> Nuevo
+          </button>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div [formGroup]="palFiltro">
+            <label for="">Filtrar por estados</label>
+            <mat-select class="form-control" formControlName="filtroDeEstados" placeholder="---SELECCIONE---">
+              <mat-option *ngFor="let estado of estadosFiltro" [value]="estado.value">
+                {{estado.label}}
+              </mat-option>
+            </mat-select>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="d-flex justify-content-end">
+            <mat-form-field appearance="outline">
+              <mat-label>Búsqueda</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Ej: C3FH1P" #input autocomplete="off">
+              <button mat-button matSuffix disabled>
+                <mat-icon color="primary">search</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mat-elevation-z8 table-container">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="codigoPaquete">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
+          <td mat-cell *matCellDef="let paquete" class="max-width-cell">{{ paquete.codigoPaquete }}</td>
+        </ng-container>
+        <ng-container matColumnDef="documentoUsuario">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Mensajero</th>
+          <td mat-cell *matCellDef="let paquete" class="max-width-cell">
+            {{ paquete.idUsuario ? getUsuarioPaquete(paquete.idUsuario).nombre + ' ' +
+            getUsuarioPaquete(paquete.idUsuario).apellido : 'SIN ASIGNAR' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="idTipo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</th>
+          <td mat-cell *matCellDef="let paquete" class="max-width-cell">{{ getTipoPaquete (paquete.idTipo) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="pesoPaquete">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Peso</th>
+          <td mat-cell *matCellDef="let paquete" class="max-width-cell">{{ paquete.pesoPaquete }} kg</td>
+        </ng-container>
+        <ng-container matColumnDef="documentoRemitente">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Remitente</th>
+          <td mat-cell *matCellDef="let paquete" class="max-width-cell">{{ getRemitentePaquete
+            (paquete.documentoRemitente).nombre
+            }}</td>
+        </ng-container>
+        <ng-container matColumnDef="documentoDestinatario">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Destinatario</th>
+          <td mat-cell *matCellDef="let paquete" class="max-width-cell">{{ paquete.nombreDestinatario
+            }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigoQrPaquete">
+          <th mat-header-cell *matHeaderCellDef>Código QR</th>
+          <td mat-cell *matCellDef="let paquete">
+            <button mat-icon-button title="Ver código QR" (click)="openQrDialog(paquete.qrCodeUrl)">
+              <mat-icon>qr_code_2</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+
+        <div *ngIf="!cords">
+          <ng-container matColumnDef="lat">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>lat</th>
+            <td mat-cell *matCellDef="let paquete" class="max-width-cell">{{ paquete.lat }}</td>
+          </ng-container>
+          <ng-container matColumnDef="lng">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>lng</th>
+            <td mat-cell *matCellDef="let paquete" class="max-width-cell">{{ paquete.lng }}</td>
+          </ng-container>
+        </div>
+
+        <ng-container matColumnDef="idEstado">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+          <td mat-cell *matCellDef="let paquete" class="max-width-cell">{{ getEstadoPaquete (paquete.idEstado) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let paquete">
+            <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #actionsMenu="matMenu">
+              <button mat-menu-item (click)="generatePDF(paquete.idPaquete)">
+                <mat-icon [ngStyle]="{'color': 'red'}">picture_as_pdf</mat-icon>
+                <span>PDF</span>
+              </button>
+              <button mat-menu-item (click)="viewPaquete(paquete)">
+                <mat-icon [ngStyle]="{'color': '#AED581'}">visibility</mat-icon>
+                <span>Ver</span>
+              </button>
+              <button mat-menu-item (click)="editPaquete(paquete.idPaquete)"
+                [disabled]="paquete.idEstado == 2 || paquete.idEstado == 3">
+                <mat-icon [ngStyle]="{'color': '#1A237E'}">edit</mat-icon>
+                <span>Editar</span>
+              </button>
+              <button mat-menu-item (click)="deletePaquete(paquete.idPaquete)"
+                [disabled]="paquete.idEstado == 2 || paquete.idEstado == 3 || paquete.idEstado == 4">
+                <mat-icon [ngStyle]="{'color': 'red'}">delete</mat-icon>
+                <span>Eliminar</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row
+          *matHeaderRowDef="['codigoPaquete', 'documentoUsuario', 'idTipo', 'pesoPaquete', 'documentoRemitente', 'documentoDestinatario','codigoQrPaquete', 'idEstado' , 'acciones']">
+        </tr>
+        <tr mat-row
+          *matRowDef="let row; columns: ['codigoPaquete', 'documentoUsuario', 'idTipo', 'pesoPaquete', 'documentoRemitente', 'documentoDestinatario', 'codigoQrPaquete', 'idEstado', 'acciones']">
+        </tr>
+      </table>
+    </div>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+      aria-label="Select page of periodic elements"></mat-paginator><br>
+    <div *ngIf="dataSource.filteredData.length === 0" class="no-results-message" style="text-align: center;">
+      <strong>NO SE ENCONTRARON RESULTADOS.</strong>
+    </div>
+
+    <div class="button-container">
+      <div>
+        <button mat-menu-item title="Paquetes entregados por mensajero" (click)="viewPaquetesEntregados()">
+          <mat-icon [ngStyle]="{'color': '#3386FF'}">assignment_turned_in</mat-icon>
+          <span class="icon-text">Entregas por mensajero</span>
+        </button>
+      </div>
+      <div class="align-center">
+        <button mat-menu-item class="icon-text excel-button" (click)="generateExcel()">
+          <mat-icon [ngStyle]="{'color': '#37D12B'}">description</mat-icon>
+          <span class="icon-text">EXCEL</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</app-navigation>
+
+<ng-template #viewPaqueteDialog let-dialogData>
+  <div class="dialogData">
+    <h2>Información del paquete</h2>
+    <h4>Remitente:</h4>
+    <p><strong>N° Documento:</strong> {{ dialogData.documentoRemitente }}</p>
+    <p><strong>Nombre:</strong> {{ getRemitentePaquete(dialogData.documentoRemitente).nombre }}</p>
+    <p><strong>Teléfono:</strong> {{ getRemitentePaquete(dialogData.documentoRemitente).telefono }}</p>
+    <p><strong>Correo:</strong> {{ getRemitentePaquete(dialogData.documentoRemitente).correo }}</p><br>
+    <h4>Destinatario:</h4>
+    <p><strong>N° Documento:</strong> {{ dialogData.documentoDestinatario }}</p>
+    <p><strong>Nombre:</strong> {{ dialogData.nombreDestinatario }}</p>
+    <p><strong>Teléfono:</strong> {{ dialogData.telefonoDestinatario }}</p>
+    <p><strong>Correo:</strong> {{ dialogData.correoDestinatario }}</p>
+    <p><strong>Dirección:</strong> {{ dialogData.direccionPaquete }}</p>
+    <p><strong>Detalle de dirección:</strong> {{ dialogData.detalleDireccionPaquete }}</p><br>
+    <h4>Paquete:</h4>
+    <p><strong>Código:</strong> {{ dialogData.codigoPaquete }}</p>
+    <p><strong>Peso:</strong> {{ dialogData.pesoPaquete }} kg</p>
+    <p><strong>Tamaño:</strong> {{ getTamanoPaquete(dialogData.idTamano) }}</p>
+    <p><strong>Tipo:</strong> {{ getTipoPaquete(dialogData.idTipo) }}</p>
+    <p><strong>Fecha aprox de entrega:</strong> {{ dialogData.fechaAproxEntrega }}</p>
+    <p><strong>Contenido:</strong> {{ dialogData.contenidoPaquete }}</p><br>
+  </div>
+</ng-template>
+
+<ng-template #viewQR let-dialogData>
+  <div class="dialogData">
+    <div class="col d-flex align-items-center justify-content-center">
+      <div class="qr-cell">
+        <img [src]="dialogData.qrCodeUrl" alt="qr-image" class="qr-image-details">
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #viewPaquetesEntregadosDialog>
+  <div class="dialogData">
+    <h2>Paquetes entregados por mensajero</h2>
+    <div class="date-navigation">
+      <h4 class="" style="text-align: center;">
+        <button (click)="moverFecha(-1)">
+          <mat-icon>keyboard_arrow_left</mat-icon>
+        </button>
+        {{this.fechaActual}}
+        <button *ngIf="this.melo" (click)="moverFecha(1)">
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+      </h4>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <input type="date" class="form-control" max="{{this.fechaActualReal}}" [(ngModel)]="fechaActual"
+          (change)="cambiarFecha()">
+      </div>
+    </div><br>
+    <div class="row">
+      <div class="col-8">
+        <h6 style="text-align: center;">Mensajero</h6>
+      </div>
+      <div class="col-4">
+        <h6 style="text-align: center;">Entregas</h6>
+      </div>
+    </div>
+    <hr>
+    <div class="row" *ngFor="let i of this.usuario">
+      <div class="col-8">
+        <p><strong>N° Documento:</strong> {{ i.documentoUsuario }}</p>
+        <p><strong>Nombre:</strong> {{ i.nombreUsuario }} {{ i.apellidoUsuario }}</p>
+      </div>
+      <div class="col-4">
+        <p class="" style="text-align: center;">{{ getPaquetesEntregados(i.idUsuario) }}</p>
+      </div>
+      <hr>
+    </div>
+  </div>
+</ng-template>

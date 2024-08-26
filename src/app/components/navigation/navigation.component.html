@@ -1,0 +1,41 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+    <mat-toolbar id="header">
+      <h1>Menú</h1>
+    </mat-toolbar>
+    <ng-container>
+      <mat-nav-list *ngFor="let module of modules">
+        <a mat-list-item [routerLink]="module.route">
+          {{ module.name }}
+        </a>
+      </mat-nav-list>
+    </ng-container>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar class="custom-toolbar">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span routerLink="/home">Star <b>☆ </b>Routing</span>
+      <span class="spacer"></span>
+
+      <mat-slide-toggle mat-icon-slide (ngModelChange)="darkMode($event)"
+        [(ngModel)]="isDarkThemeActive"></mat-slide-toggle>
+
+      <button mat-icon-button aria-label="Usuario" [matMenuTriggerFor]="userMenu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item routerLink="/profile">
+          <mat-icon>manage_accounts</mat-icon>
+          Administrar usuario</button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          Cerrar sesión
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

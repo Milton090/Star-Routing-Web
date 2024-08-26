@@ -1,0 +1,133 @@
+<div class="spinner-overlay" *ngIf="loading">
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+<app-navigation>
+  <div class="container">
+    <br>
+    <h1>Clientes</h1>
+    <div class="create-button-container">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <button mat-raised-button color="primary" (click)="newCliente()" style="margin-top: 20px;">
+            <mat-icon>add</mat-icon> Nuevo
+          </button>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div class="d-flex justify-content-end">
+            <mat-form-field appearance="outline">
+              <mat-label>Búsqueda</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Ej: Juan" #input autocomplete="off">
+              <button mat-button matSuffix disabled>
+                <mat-icon color="primary">search</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mat-elevation-z8 table-container">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="num">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let cliente; let i = index" class="max-width-cell">{{ i + 1 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="documentoCliente">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Documento</th>
+          <td mat-cell *matCellDef="let cliente" class="max-width-cell">{{ cliente.documentoCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="idTipoDocumento">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo documento</th>
+          <td mat-cell *matCellDef="let cliente" class="max-width-cell">{{ cliente.idTipoDocumento }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreCliente">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+          <td mat-cell *matCellDef="let cliente" class="max-width-cell">{{ cliente.nombreCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="telefonoCliente">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Teléfono</th>
+          <td mat-cell *matCellDef="let cliente" class="max-width-cell">{{ cliente.telefonoCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="correoCliente">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Correo</th>
+          <td mat-cell *matCellDef="let cliente" class="max-width-cell">{{ cliente.correoCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="direccionCliente">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Dirección</th>
+          <td mat-cell *matCellDef="let cliente" class="max-width-cell">{{ cliente.direccionCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let cliente">
+            <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #actionsMenu="matMenu">
+              <button mat-menu-item (click)="viewCliente(cliente)">
+                <mat-icon [ngStyle]="{'color': '#AED581'}">visibility</mat-icon>
+                <span>Ver</span>
+              </button>
+              <button mat-menu-item (click)="editCliente(cliente.idCliente)">
+                <mat-icon [ngStyle]="{'color': '#1A237E'}">edit</mat-icon>
+                <span>Editar</span>
+              </button>
+              <button mat-menu-item (click)="deleteCliente(cliente.idCliente)">
+                <mat-icon [ngStyle]="{'color': 'red'}">delete</mat-icon>
+                <span>Eliminar</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row
+          *matHeaderRowDef="['num', 'documentoCliente', 'nombreCliente', 'telefonoCliente', 'correoCliente', 'direccionCliente', 'acciones']">
+        </tr>
+        <tr mat-row
+          *matRowDef="let row; columns: ['num', 'documentoCliente', 'nombreCliente', 'telefonoCliente', 'correoCliente', 'direccionCliente', 'acciones']">
+        </tr>
+      </table>
+    </div>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator><br>
+    <div *ngIf="dataSource.filteredData.length === 0" class="no-results-message" style="text-align: center;">
+      <strong>NO SE ENCONTRARON RESULTADOS.</strong>
+    </div>
+
+    <div class="button-container">
+      <div></div>
+      <div class="align-center">
+        <button mat-menu-item class="icon-text pdf-button" (click)="generatePDF()">
+          <mat-icon [ngStyle]="{'color': '#FF0000'}">picture_as_pdf</mat-icon>
+          <span class="icon-text">PDF</span>
+        </button>
+
+        <button mat-menu-item class="icon-text excel-button" (click)="generateExcel()">
+          <mat-icon [ngStyle]="{'color': '#37D12B'}">description</mat-icon>
+          <span class="icon-text">EXCEL</span>
+        </button>
+      </div>
+    </div>
+    <br><br>
+  </div>
+</app-navigation>
+<ng-template #viewClienteDialog let-dialogData>
+  <div class="dialogData">
+    <h2>Información del cliente</h2>
+    <p><strong>N° Documento:</strong> {{ dialogData.documentoCliente }}</p>
+    <p><strong>Tipo documento:</strong> {{ getTipoDocumento(dialogData.idTipoDocumento) }}</p>
+    <p><strong>Nombre:</strong> {{ dialogData.nombreCliente }}</p>
+    <p><strong>Teléfono:</strong> {{ dialogData.telefonoCliente }}</p>
+    <p><strong>Correo:</strong> {{ dialogData.correoCliente }}</p>
+    <p><strong>Dirección:</strong> {{ dialogData.direccionCliente }}</p>
+    <p><strong>Detalle dirección:</strong> {{ dialogData.detalleDireccionCliente }}</p>
+  </div>
+</ng-template>

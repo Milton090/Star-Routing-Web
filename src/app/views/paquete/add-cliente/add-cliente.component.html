@@ -1,0 +1,133 @@
+<div class="spinner-overlay" *ngIf="loading">
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+<h1 mat-dialog-title>Registrar remitente</h1>
+<div mat-dialog-content>
+  <div class="content">
+    <form [formGroup]="newForm" (ngSubmit)="postForm(newForm.value)">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="idTipoDocumento">Tipo documento <b style="color: red;">*</b></label>
+            <mat-select class="form-control" formControlName="idTipoDocumento" placeholder="---SELECCIONE---" [ngClass]="{
+                  'is-invalid': newForm.get('idTipoDocumento')?.invalid && newForm.get('idTipoDocumento')?.touched,
+                  'is-valid': newForm.get('idTipoDocumento')?.valid
+                }">
+              <mat-option *ngFor="let tipoDocumento of tiposDocumento" [value]="tipoDocumento.idTipoDocumento">
+                {{ tipoDocumento.nombreTipo }}
+              </mat-option>
+            </mat-select>
+            <div *ngIf="newForm.get('idTipoDocumento')?.errors?.['required']" class="invalid-feedback">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="exampleFormControlInput1">N° Documento <b style="color: red;">*</b></label>
+            <input type="text" class="form-control" formControlName="documentoCliente" [ngClass]="{
+                  'is-invalid': newForm.get('documentoCliente')?.invalid && (newForm.get('documentoCliente')?.touched || newForm.get('documentoCliente')?.dirty),
+                  'is-valid': newForm.get('documentoCliente')?.valid
+                }">
+            <div *ngIf="newForm.get('documentoCliente')?.errors?.['required']" class="invalid-feedback">
+              Este campo es obligatorio.
+            </div>
+            <div *ngIf="newForm.get('documentoCliente')?.errors?.['pattern']" class="invalid-feedback">
+              Documento inválido, mínimo 7 y máximo 10 dígitos numéricos.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Nombre <b style="color: red;">*</b></label>
+            <input type="text" class="form-control" formControlName="nombreCliente" [ngClass]="{
+                  'is-invalid': newForm.get('nombreCliente')?.invalid && (newForm.get('nombreCliente')?.touched || newForm.get('nombreCliente')?.dirty),
+                  'is-valid': newForm.get('nombreCliente')?.valid
+                }">
+            <div *ngIf="newForm.get('nombreCliente')?.errors?.['required']" class="invalid-feedback">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Teléfono <b style="color: red;">*</b></label>
+            <input type="text" class="form-control" formControlName="telefonoCliente" [ngClass]="{
+                'is-invalid': newForm.get('telefonoCliente')?.invalid && (newForm.get('telefonoCliente')?.touched || newForm.get('telefonoCliente')?.dirty),
+                'is-valid': newForm.get('telefonoCliente')?.valid
+              }">
+
+            <div *ngIf="newForm.get('telefonoCliente')?.errors?.['required']" class="invalid-feedback">
+              Este campo es obligatorio.
+            </div>
+
+            <div *ngIf="newForm.get('telefonoCliente')?.errors?.['pattern']" class="invalid-feedback">
+              Teléfono inválido, debe contener 10 dígitos numéricos.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Correo <b style="color: red;">*</b></label>
+            <input type="email" class="form-control" formControlName="correoCliente" [ngClass]="{
+                'is-invalid': newForm.get('correoCliente')?.invalid && (newForm.get('correoCliente')?.touched || newForm.get('correoCliente')?.dirty),
+                'is-valid': newForm.get('correoCliente')?.valid
+              }">
+
+            <div *ngIf="newForm.get('correoCliente')?.errors?.['required']" class="invalid-feedback">
+              Este campo es obligatorio.
+            </div>
+
+            <div *ngIf="newForm.get('correoCliente')?.errors?.['pattern']" class="invalid-feedback">
+              Correo inválido.
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="d-flex align-items-center">
+            <div class="form-group flex-grow-1">
+              <label for="exampleFormControlInput1">Dirección <b style="color: red;">*</b></label>
+              <input type="text" class="form-control" formControlName="direccionCliente" #inputPlaces [ngClass]="{
+                'is-invalid': newForm.get('direccionCliente')?.invalid && (newForm.get('direccionCliente')?.touched || newForm.get('direccionCliente')?.dirty),
+                'is-valid': newForm.get('direccionCliente')?.valid
+              }">
+              <div *ngIf="newForm.get('direccionCliente')?.errors?.['required']" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+            <button class="btn btn-circle btn-update btn-margin" type="button" title="Seleccionar en el mapa"
+              (click)="openMapDialog()">
+              <span class="material-icons">location_on</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Detalle dirección</label>
+            <textarea class="form-control" formControlName="detalleDireccionCliente" [ngClass]="{
+              'is-valid': newForm.get('detalleDireccionCliente')?.valid && (newForm.get('detalleDireccionCliente')?.touched || newForm.get('detalleDireccionCliente')?.dirty)
+            }"></textarea>
+          </div>
+        </div>
+      </div>
+      <br>
+
+      <button type="button" mat-raised-button color='accent' (click)="closeDialog()">Atras</button> |
+      <button type="submit" mat-raised-button color='primary' [disabled]="newForm.invalid">Guardar</button>
+    </form>
+  </div>
+</div>
+
+<ng-template #viewMap>
+  <div id="map" style="width: 100%; height: 400px;"></div>
+</ng-template>

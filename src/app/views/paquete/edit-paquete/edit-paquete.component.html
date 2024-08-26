@@ -1,0 +1,301 @@
+<div class="spinner-overlay" *ngIf="loading">
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+<app-navigation>
+
+  <div class="container">
+    <br>
+    <h2>Editar paquete</h2>
+    <br>
+    <div class="container">
+      <form [formGroup]="editRemitente">
+        <div class="row">
+          <h4>Remitente
+            <button class="btn btn-circle" title="Crear remitente" type="button" (click)="openAddClienteDialog()">
+              <span class="material-icons" style="color: green;">add</span>
+            </button>
+          </h4>
+          <div class="col">
+            <div class="form-group">
+              <label for="documentoCliente">N° Documento <b style="color: red;">*</b></label>
+              <input matInput type="text" [matAutocomplete]="auto" list="remitentes" class="form-control"
+                formControlName="documentoCliente" [ngClass]="{
+                'is-invalid': editRemitente.get('documentoCliente')?.invalid && editRemitente.get('documentoCliente')?.dirty,
+                'is-valid': editRemitente.get('documentoCliente')?.valid
+              }" />
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filtrarCliente | async" [value]="option.documentoCliente">
+                  {{option.documentoCliente}}
+                </mat-option>
+              </mat-autocomplete>
+              <div *ngIf="editRemitente.get('documentoCliente')?.errors?.['pattern']" class="invalid-feedback">
+                Documento inválido, mínimo 7 y máximo 10 dígitos numéricos.
+              </div>
+              <div *ngIf="editRemitente.get('documentoCliente')?.errors?.['required']" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Nombre</label>
+              <input type="text" class="form-control" formControlName="nombreCliente" readonly [ngClass]="{
+                'is-valid': editRemitente.get('nombreCliente')?.valid && editRemitente.get('documentoCliente')?.valid
+              }">
+            </div>
+          </div>
+        </div>
+        <hr>
+
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Correo <b style="color: red;">*</b></label>
+              <input type="email" [readOnly]="editRemitente.get('documentoCliente')?.invalid" class="form-control"
+                formControlName="correoCliente" [ngClass]="{
+                'is-invalid': editRemitente.get('correoCliente')?.invalid && editRemitente.get('correoCliente')?.dirty && editRemitente.get('documentoCliente')?.valid,
+                'is-valid': editRemitente.get('correoCliente')?.valid && editRemitente.get('documentoCliente')?.valid
+              }" />
+              <div
+                *ngIf="editRemitente.get('correoCliente')?.errors?.['pattern'] && editRemitente.get('documentoCliente')?.valid"
+                class="invalid-feedback">
+                Correo inválido.
+              </div>
+              <div
+                *ngIf="editRemitente.get('correoCliente')?.errors?.['required'] && editRemitente.get('documentoCliente')?.valid"
+                class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="d-flex align-items-center">
+              <div class="form-group flex-grow-1">
+                <label for="exampleFormControlInput1">Teléfono <b style="color: red;">*</b></label>
+                <input type="text" [readOnly]="editRemitente.get('documentoCliente')?.invalid" class="form-control"
+                  formControlName="telefonoCliente" [ngClass]="{
+                  'is-invalid': editRemitente.get('telefonoCliente')?.invalid && editRemitente.get('telefonoCliente')?.dirty && editRemitente.get('documentoCliente')?.valid,
+                  'is-valid': editRemitente.get('telefonoCliente')?.valid && editRemitente.get('documentoCliente')?.valid
+                }" />
+                <div
+                  *ngIf="editRemitente.get('telefonoCliente')?.errors?.['pattern'] && editRemitente.get('documentoCliente')?.valid"
+                  class="invalid-feedback">
+                  Teléfono inválido, debe contener 10 dígitos numéricos.
+                </div>
+                <div
+                  *ngIf="editRemitente.get('telefonoCliente')?.errors?.['required'] && editRemitente.get('documentoCliente')?.valid"
+                  class="invalid-feedback">
+                  Este campo es obligatorio.
+                </div>
+              </div>
+              <button class="btn btn-circle btn-update btn-margin" [disabled]="editRemitente.invalid" type="button"
+                title="Actualizar correo y/o teléfono" (click)="editRemi(editRemitente.value)">
+                <span class="material-icons">edit</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <hr><br><br>
+      </form>
+
+
+      <form [formGroup]="editForm" (ngSubmit)="postForm(editForm.value)">
+        <div class="row">
+          <h4>Destinatario</h4>
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">N° Documento <b style="color: red;">*</b></label>
+              <input matInput type="text" [matAutocomplete]="auto2" list="destinatarios" class="form-control"
+                formControlName="documentoDestinatario" [ngClass]="{
+                'is-invalid': editForm.get('documentoDestinatario')?.invalid && editForm.get('documentoDestinatario')?.dirty,
+                'is-valid': editForm.get('documentoDestinatario')?.valid
+              }" />
+              <mat-autocomplete #auto2="matAutocomplete">
+                <mat-option *ngFor="let option of filtrarDestinatario | async" [value]="option.documentoCliente">
+                  {{option.documentoCliente}}
+                </mat-option>
+              </mat-autocomplete>
+              <div *ngIf="editForm.get('documentoDestinatario')?.errors?.['pattern']" class="invalid-feedback">
+                Documento inválido, mínimo 7 y máximo 10 dígitos numéricos.
+              </div>
+              <div *ngIf="editForm.get('documentoDestinatario')?.errors?.['required']" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="documentoDestinatario">Nombre <b style="color: red;">*</b></label>
+              <input list="destinatarios" class="form-control" formControlName="nombreDestinatario" [ngClass]="{
+                'is-invalid': editForm.get('nombreDestinatario')?.invalid && editForm.get('nombreDestinatario')?.dirty,
+                'is-valid': editForm.get('nombreDestinatario')?.valid
+              }" />
+
+              <div *ngIf="editForm.get('nombreDestinatario')?.errors?.['required']" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Correo <b style="color: red;">*</b></label>
+              <input type="email" class="form-control" formControlName="correoDestinatario" [ngClass]="{
+                'is-invalid': editForm.get('correoDestinatario')?.invalid && editForm.get('correoDestinatario')?.dirty,
+                'is-valid': editForm.get('correoDestinatario')?.valid
+              }" />
+              <div *ngIf="editForm.get('correoDestinatario')?.errors?.['pattern']" class="invalid-feedback">
+                Correo inválido
+              </div>
+              <div *ngIf="editForm.get('correoDestinatario')?.errors?.['required']" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Teléfono <b style="color: red;">*</b></label>
+              <input type="text" class="form-control" formControlName="telefonoDestinatario" [ngClass]="{
+                'is-invalid': editForm.get('telefonoDestinatario')?.invalid && editForm.get('telefonoDestinatario')?.dirty,
+                'is-valid': editForm.get('telefonoDestinatario')?.valid
+              }" />
+              <div *ngIf="editForm.get('telefonoDestinatario')?.errors?.['pattern']" class="invalid-feedback">
+                Teléfono inválido, debe contener 10 dígitos numéricos.
+              </div>
+              <div *ngIf="editForm.get('telefonoDestinatario')?.errors?.['required']" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="d-flex align-items-center">
+              <div class="form-group flex-grow-1">
+                <label for="exampleFormControlInput1">Dirección</label>
+                <input type="text" class="form-control" formControlName="direccionPaquete" #inputPlaces [ngClass]="{
+                  'is-invalid': editForm.get('direccionPaquete')?.invalid && editForm.get('direccionPaquete')?.dirty,
+                  'is-valid': editForm.get('direccionPaquete')?.valid
+                }" />
+                <div *ngIf="editForm.get('direccionPaquete')?.errors?.['required']" class="invalid-feedback">
+                  Este campo es obligatorio.
+                </div>
+              </div>
+              <button class="btn btn-circle btn-map btn-margin" type="button" title="Selccionar en el mapa"
+                (click)="openMapDialog()">
+                <span class="material-icons">location_on</span>
+              </button>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Detalle dirección</label>
+              <textarea class="form-control" formControlName="detalleDireccionPaquete" [ngClass]="{
+                'is-valid': editForm.get('detalleDireccionPaquete')?.valid
+              }"></textarea>
+            </div>
+          </div>
+        </div>
+        <hr><br><br>
+
+        <div class="row">
+          <h4>Paquete</h4>
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Código <b style="color: red;">*</b></label>
+              <input class="form-control" readonly formControlName="codigoPaquete" [ngClass]="{
+                'is-valid': editForm.get('codigoPaquete')?.valid
+              }">
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Peso en KG <b style="color: red;">*</b></label>
+              <input type="text" class="form-control" formControlName="pesoPaquete" [ngClass]="{
+                'is-invalid': editForm.get('pesoPaquete')?.invalid && editForm.get('pesoPaquete')?.dirty,
+                'is-valid': editForm.get('pesoPaquete')?.valid
+              }">
+              <div *ngIf="editForm.get('pesoPaquete')?.errors?.['pattern']" class="invalid-feedback">
+                Campo inválido, máximo 3 digitos numéricos y no más de 2 decimales.
+              </div>
+              <div *ngIf="editForm.get('pesoPaquete')?.errors?.['required']" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="">Tamaño</label>
+              <mat-select class="form-control" formControlName="idTamano" placeholder="---SELECCIONE---" [ngClass]="{
+                'is-valid': editForm.get('idTamano')?.valid
+              }">
+                <mat-option *ngFor="let t of tamanos" [value]="t.idTamano">
+                  {{ t.tamanoPaquete }}
+                </mat-option>
+              </mat-select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="">Tipo <b style="color: red;">*</b></label>
+              <mat-select class="form-control" formControlName="idTipo" placeholder="---SELECCIONE---" [ngClass]="{
+              'is-valid': editForm.get('idTipo')?.valid
+            }">
+                <mat-option *ngFor="let t of tipos" [value]="t.idTipo">
+                  {{ t.tipoPaquete }}
+                </mat-option>
+              </mat-select>
+              <div *ngIf="editForm.get('idTipo')?.errors?.['required']" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Fecha aproximada de entrega <b style="color: red;">*</b></label>
+              <input type="date" class="form-control" [min]="getFechAct()" formControlName="fechaAproxEntrega"
+                [ngClass]="{
+                'is-invalid': editForm.get('fechaAproxEntrega')?.invalid,
+                'is-valid': editForm.get('fechaAproxEntrega')?.valid
+              }">
+              <div *ngIf="editForm.get('fechaAproxEntrega')?.errors?.['required']" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+              <div *ngIf="editForm.get('fechaAproxEntrega')?.errors?.['fechaPasada']" class="invalid-feedback">
+                Fecha inválida.
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Contenido del paquete <b style="color: red;">*</b></label>
+              <textarea class="form-control" formControlName="contenidoPaquete" [ngClass]="{
+                  'is-invalid': editForm.get('contenidoPaquete')?.invalid && editForm.get('contenidoPaquete')?.dirty,
+                  'is-valid': editForm.get('contenidoPaquete')?.valid
+                }"></textarea>
+              <div *ngIf="editForm.get('contenidoPaquete')?.errors?.['required']" class="invalid-feedback">
+                Este campo es obligatorio.
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+
+        <button type="button" mat-raised-button color='accent' (click)="goBack()">Atras</button> |
+        <button type="submit" mat-raised-button color='primary' [disabled]="editForm.invalid">Editar</button>
+        <br><br>
+      </form>
+    </div>
+  </div>
+</app-navigation>
+
+<ng-template #viewMap>
+  <div id="map" style="width: 100%; height: 400px;"></div>
+</ng-template>

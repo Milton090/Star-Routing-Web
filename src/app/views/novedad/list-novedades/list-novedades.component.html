@@ -1,0 +1,120 @@
+<div class="spinner-overlay" *ngIf="loading">
+  <div class="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+
+<app-navigation>
+  <div class="container">
+    <br>
+    <h1>Novedades</h1>
+    <div class="row">
+      <div class="col-12 col-md-6">
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="d-flex justify-content-end">
+          <mat-form-field appearance="outline">
+            <mat-label>Búsqueda</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Ej: B3S67G" #input autocomplete="off">
+            <button mat-button matSuffix disabled>
+              <mat-icon color="primary">search</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="mat-elevation-z8 table-container">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="num">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let novedad; let i = index" class="max-width-cell">{{ i + 1}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
+          <td mat-cell *matCellDef="let novedad" class="max-width-cell">{{ getPaquete
+            (novedad.idPaquete).codigoPaquete}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaNoEntrega">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+          <td mat-cell *matCellDef="let novedad" class="max-width-cell">{{ novedad.fechaNoEntrega}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="idUsuario">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Mensajero</th>
+          <td mat-cell *matCellDef="let novedad" class="max-width-cell">
+            {{ getMensajero(novedad.idUsuario).nombreUsuario + ' ' + getMensajero(novedad.idUsuario).apellidoUsuario }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="motivoNoEntrega">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Motivo</th>
+          <td mat-cell *matCellDef="let novedad" class="max-width-cell">{{ novedad.motivoNoEntrega }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let novedad">
+            <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #actionsMenu="matMenu">
+              <button mat-menu-item (click)="viewNovedad(novedad)">
+                <mat-icon [ngStyle]="{'color': '#AED581'}">visibility</mat-icon>
+                <span>Ver</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row
+          *matHeaderRowDef="['num', 'codigo', 'fechaNoEntrega', 'idUsuario', 'motivoNoEntrega', 'acciones']">
+        </tr>
+        <tr mat-row
+          *matRowDef="let row; columns: ['num', 'codigo', 'fechaNoEntrega', 'idUsuario', 'motivoNoEntrega', 'acciones']">
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+      aria-label="Select page of periodic elements"></mat-paginator><br>
+    <div *ngIf="dataSource.filteredData.length === 0" class="no-results-message" style="text-align: center;">
+      <strong>NO SE ENCONTRARON RESULTADOS.</strong>
+    </div>
+
+    <div class="button-container">
+      <div></div>
+      <div class="align-center">
+        <button mat-menu-item class="icon-text pdf-button" (click)="generatePDF()">
+          <mat-icon [ngStyle]="{'color': '#FF0000'}">picture_as_pdf</mat-icon>
+          <span class="icon-text">PDF</span>
+        </button>
+
+        <button mat-menu-item class="icon-text excel-button" (click)="generateExcel()">
+          <mat-icon [ngStyle]="{'color': '#37D12B'}">description</mat-icon>
+          <span class="icon-text">EXCEL</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</app-navigation>
+
+<ng-template #viewNovedadDialog let-dialogData>
+  <div class="dialogData">
+    <h2>Información de la novedad</h2><br>
+    <p><strong>Código paquete:</strong> {{ getPaquete (dialogData.idPaquete).codigoPaquete}}</p>
+    <p><strong>Fecha:</strong> {{ dialogData.fechaNoEntrega }}</p>
+    <p><strong>Motivo:</strong> {{ dialogData.motivoNoEntrega }}</p>
+    <p><strong>Mensajero:</strong> {{ getMensajero(dialogData.idUsuario).nombreUsuario + ' ' +
+      getMensajero(dialogData.idUsuario).apellidoUsuario }}</p>
+    <p><strong>Doc mensajero:</strong> {{ getMensajero(dialogData.idUsuario).documentoUsuario }}</p><br>
+    <h4>Destinatario:</h4>
+    <p><strong>N° Documento: </strong> {{ getPaquete(dialogData.idPaquete).documentoDestinatario }}</p>
+    <p><strong>Nombre: </strong> {{ getPaquete(dialogData.idPaquete).nombreDestinatario }}</p>
+    <p><strong>Email: </strong>{{ getPaquete(dialogData.idPaquete).correoDestinatario }}</p>
+    <p><strong>Teléfono: </strong>{{ getPaquete(dialogData.idPaquete).telefonoDestinatario }}</p>
+  </div>
+</ng-template>
